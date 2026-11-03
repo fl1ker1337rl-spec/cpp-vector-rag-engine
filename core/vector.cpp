@@ -4,7 +4,7 @@
 
 float VectorIndex::calculateCosineSimilarity(const std::vector<float> &a, const std::vector<float> &b)
 {
-    // Проверка на пустые векторы или несовпадение размеров
+    
     if (a.empty() || a.size() != b.size())
     {
         return 0.0f;
@@ -21,13 +21,11 @@ float VectorIndex::calculateCosineSimilarity(const std::vector<float> &a, const 
         norm_b += b[i] * b[i];
     }
 
-    // Защита от деления на ноль, если один из векторов нулевой
     if (norm_a == 0.0f || norm_b == 0.0f)
     {
         return 0.0f;
     }
 
-    // Итоговая формула: скалярное произведение / произведение длин векторов
     return dot_product / (std::sqrt(norm_a) * std::sqrt(norm_b));
 }
 
@@ -50,8 +48,6 @@ std::vector<int> VectorIndex::search(const std::vector<float> &query_vec, int to
         scored_docs.push_back({score, doc_id});
     }
 
-    // 5. Здесь дальше будет сортировка по убыванию score,
-    // чтобы лучшие документы оказались в самом начале.
     std::sort(scored_docs.begin(), scored_docs.end(), [](const auto &a, const auto &b)
               { return a.first > b.first; });
 
@@ -64,7 +60,6 @@ std::vector<int> VectorIndex::search(const std::vector<float> &query_vec, int to
         result_ids.push_back(scored_docs[i].second); // забираем только ID
     }
 
-    // 4. Возвращаем список лучших ID
     return result_ids;
 }
 
@@ -99,19 +94,17 @@ void VectorIndex::load_from_file(const std::string &filepath)
         throw std::runtime_error("Не удалось открыть файл для чтения: " + filepath);
     }
 
-    // Очищаем текущие данные в памяти перед загрузкой новых
     ids_.clear();
     vectors_.clear();
 
-    // 1. Читаем общее количество документов
+    // Читаем общее количество документов
     size_t size = 0;
     in.read(reinterpret_cast<char *>(&size), sizeof(size));
 
-    // Резервируем память заранее, чтобы вектор не перераспределялся на каждый шаг
     ids_.resize(size);
     vectors_.resize(size);
 
-    // 2. Читаем каждый документ обратно
+    // Читаем каждый документ обратно
     for (size_t i = 0; i < size; ++i)
     {
         // Читаем ID
