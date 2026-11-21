@@ -3,7 +3,6 @@ project(vector_engine)
 
 set(CMAKE_CXX_STANDARD 17)
 
-# CMake сам скачает pybind11 при первой сборке у любого пользователя
 include(FetchContent)
 FetchContent_Declare(
   pybind11
